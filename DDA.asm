@@ -1,7 +1,7 @@
-; xmm0 == x1
-; xmm1 == y1
-; xmm2 == x2
-; xmm3 == y2
+; xmm0 == x1 (rounded to whole number)
+; xmm1 == y1 (rounded to whole number)
+; xmm2 == x2 (rounded to whole number)
+; xmm3 == y2 (rounded to whole number)
 draw_line:
 	sub rsp, 0x40
 	movups [rsp], xmm9

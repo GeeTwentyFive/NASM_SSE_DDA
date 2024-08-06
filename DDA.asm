@@ -41,21 +41,20 @@ draw_line:
 	mov eax, __float32__(4.0)
 	movd xmm7, eax ; xmm7 = 4.0 f32
 
-	cvtsi2ss xmm8, [PIXELS_PER_SCAN_LINE]
+	mov r8d, [PIXELS_PER_SCAN_LINE]
 
 	mov rcx, [FRAMEBUFFER_BASE_PTR]
 
 .loop_draw_line:
-	movaps xmm9, xmm0 ; x1_2 -> xmm9
-	mulss xmm9, xmm7 ; x = x1_2 * 4.0 f32
+	cvttss2si eax, xmm0 ; int(x1) -> eax
+	shl eax, 2 ; x = x * 4
 
-	movaps xmm10, xmm1 ; y1_2 -> xmm10
-	mulss xmm10, xmm8 ; y = PIXELS_PER_SCAN_LINE f32 * y1
-	mulss xmm10, xmm7 ; y = y * 4.0 f32
+	cvttss2si edx, xmm1 ; int(y1) -> edx
+	imul edx, r8d ; y = y * pixels per scan line
+	shl edx, 2 ; y = y * 4
 
-	addss xmm9, xmm10 ; xy = x + y
+	add eax, edx ; xy = x + y
 
-	cvttss2si eax, xmm9 ; int(xy) -> eax
 	mov dword [abs rcx+rax], FG_COLOR_ARGB
 
 	addss xmm0, xmm2 ; x1 = x1 + dx
